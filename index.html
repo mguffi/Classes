@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Management</title>
+</head>
+<body>
+  <h1>User Management</h1>
+  
+  <!-- Formular zum Hinzufügen eines neuen Benutzers -->
+  <form id="userForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+    <button type="submit">Benutzer hinzufügen</button>
+  </form>
+  
+  <!-- Bereich zur Anzeige der Benutzer -->
+  <div id="userList"></div>
+
+  <script>
+    // Klasse User zur Darstellung von Benutzern
+    class User {
+      constructor(name, email) {
+        this.name = name;
+        this.email = email;
+      }
+      
+      toString() {
+        return JSON.stringify({ name: this.name, email: this.email });
+      }
+    }
+    
+    // Klasse UserManager zur Verwaltung von Benutzern
+    class UserManager {
+      constructor() {
+        this.users = [];
+      }
+      
+      addUser(user) {
+        this.users.push(user);
+        console.log(user.toString()); // Ausgabe des Benutzers in der Konsole
+        this.renderUsers();
+      }
+      
+      renderUsers() {
+        const userList = document.getElementById('userList');
+        userList.innerHTML = ''; // leeren Sie die Benutzerliste
+
+        this.users.forEach(user => {
+          const userItem = document.createElement('div');
+          userItem.textContent = user.toString();
+          userList.appendChild(userItem);
+        });
+      }
+    }
+    
+    const userManager = new UserManager(); // Instanz von UserManager erstellen
+    
+    // Formular-Ereignisbehandlung zum Hinzufügen eines Benutzers
+    document.getElementById('userForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // verhindert das Neuladen der Seite
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      
+      const newUser = new User(name, email);
+      userManager.addUser(newUser);
+      
+      // Formular leeren
+      document.getElementById('name').value = '';
+      document.getElementById('email').value = '';
+    });
+  </script>
+</body>
+</html>
