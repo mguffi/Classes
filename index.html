@@ -1,78 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benutzerverwaltung</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #userList {
+            margin-top: 20px;
+        }
+        #userList div {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
-  <h1>User Management</h1>
-  
-  <!-- Formular zum Hinzufügen eines neuen Benutzers -->
-  <form id="userForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required><br>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br>
-    <button type="submit">Benutzer hinzufügen</button>
-  </form>
-  
-  <!-- Bereich zur Anzeige der Benutzer -->
-  <div id="userList"></div>
+    <h1>Benutzerverwaltung</h1>
 
-  <script>
-    // Klasse User zur Darstellung von Benutzern
-    class User {
-      constructor(name, email) {
-        this.name = name;
-        this.email = email;
-      }
-      
-      toString() {
-        return JSON.stringify({ name: this.name, email: this.email });
-      }
-    }
-    
-    // Klasse UserManager zur Verwaltung von Benutzern
-    class UserManager {
-      constructor() {
-        this.users = [];
-      }
-      
-      addUser(user) {
-        this.users.push(user);
-        console.log(user.toString()); // Ausgabe des Benutzers in der Konsole
-        this.renderUsers();
-      }
-      
-      renderUsers() {
-        const userList = document.getElementById('userList');
-        userList.innerHTML = ''; // leeren Sie die Benutzerliste
+    <!-- Formular zum Hinzufügen eines neuen Benutzers -->
+    <form id="userForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="email">E-Mail:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <button type="submit">Benutzer hinzufügen</button>
+    </form>
 
-        this.users.forEach(user => {
-          const userItem = document.createElement('div');
-          userItem.textContent = user.toString();
-          userList.appendChild(userItem);
+    <!-- Bereich zur Anzeige der gespeicherten Benutzer -->
+    <div id="userList"></div>
+
+    <script>
+        // Definiere die Benutzerklasse
+        class User {
+            constructor(name, email) {
+                this.name = name;
+                this.email = email;
+            }
+
+            toString() {
+                return JSON.stringify({
+                    name: this.name,
+                    email: this.email
+                });
+            }
+        }
+
+        // Definiere die Benutzerverwaltungsklasse
+        class UserManager {
+            constructor() {
+                this.users = [];
+            }
+
+            addUser(user) {
+                this.users.push(user);
+                console.log(user.toString()); // Konsolenausgabe des neuen Benutzers
+                this.renderUsers(); // Aktualisierung der Benutzerliste auf der Webseite
+            }
+
+            renderUsers() {
+                const userListElement = document.getElementById('userList');
+                userListElement.innerHTML = ''; // Löschen der vorherigen Benutzerliste
+
+                this.users.forEach(user => {
+                    const userElement = document.createElement('div');
+                    userElement.classList.add('user');
+                    userElement.textContent = user.toString();
+                    userListElement.appendChild(userElement);
+                });
+            }
+        }
+
+        // Initialisiere die Benutzerverwaltung
+        const userManager = new UserManager();
+
+        // Eventlistener für das Hinzufügen eines Benutzers
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const newUser = new User(name, email);
+            userManager.addUser(newUser);
+            document.getElementById('name').value = ''; // Zurücksetzen des Namensfelds
+            document.getElementById('email').value = ''; // Zurücksetzen des E-Mail-Felds
         });
-      }
-    }
-    
-    const userManager = new UserManager(); // Instanz von UserManager erstellen
-    
-    // Formular-Ereignisbehandlung zum Hinzufügen eines Benutzers
-    document.getElementById('userForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // verhindert das Neuladen der Seite
-      
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      
-      const newUser = new User(name, email);
-      userManager.addUser(newUser);
-      
-      // Formular leeren
-      document.getElementById('name').value = '';
-      document.getElementById('email').value = '';
-    });
-  </script>
+    </script>
 </body>
 </html>
